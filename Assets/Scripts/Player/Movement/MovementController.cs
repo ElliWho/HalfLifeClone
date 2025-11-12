@@ -119,6 +119,7 @@ public class MovementController : MonoBehaviour
         GetMovementInput();
         //GetMouseInput();
         GetLookInput();
+        
 
     }
     [SerializeField] private float StickDegPerSec = 240f;
@@ -140,7 +141,7 @@ public class MovementController : MonoBehaviour
     }
 
     private void FixedUpdate()
-    {
+    {                       
         _velocity = _rb.linearVelocity;
         if (_isGrounded)
         {
@@ -164,6 +165,14 @@ public class MovementController : MonoBehaviour
         _rb.linearVelocity = _velocity;
         _isGrounded = false;
         groundNormal = Vector3.zero;
+
+        if(_currentPlatform != null) 
+        {
+            _currentPlatform.ConsumeDeltas(out Vector3 dPos, out Quaternion dRot);
+
+            _rb.MovePosition(_rb.position + dPos);
+            _rb.MoveRotation(_rb.rotation * dRot);
+        }
     }
     public void Teleport(Vector3 pos)
     {
@@ -240,10 +249,19 @@ public class MovementController : MonoBehaviour
     {
         _velocity.y -= gravity * Time.deltaTime;
     }
+    private MovingPlatform _currentPlatform;
     private void OnCollisionStay(Collision collision)
     {
         foreach (ContactPoint contact in collision.contacts)
         {
+            if(_currentPlatform == null) 
+            {
+                MovingPlatform plat = contact.otherCollider.GetComponent<MovingPlatform>();
+                if (plat)
+                {
+                    _currentPlatform = plat;
+                }
+            }
             if (contact.normal.y > Mathf.Sin(slopeLimit * (Mathf.PI / 180) + Mathf.PI / 2f))
             {
                 groundNormal = contact.normal;
@@ -251,5 +269,9 @@ public class MovementController : MonoBehaviour
                 return;
             }
         }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        _currentPlatform = null;
     }
 }

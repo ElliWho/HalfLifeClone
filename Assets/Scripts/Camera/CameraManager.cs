@@ -23,9 +23,17 @@ public class CameraManager : MonoBehaviour
 
     private void Update()
     {
+        
+    }
+    private void LateUpdate()
+    {
         if (followTarget == null) return;
 
         transform.position = followTarget.position;
         transform.rotation = followTarget.rotation;
+    }
+    private void FixedUpdate()
+    {
+        
     }
 }
