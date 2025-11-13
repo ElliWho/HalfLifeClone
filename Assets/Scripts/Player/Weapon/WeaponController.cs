@@ -9,6 +9,7 @@ public class WeaponController : MonoBehaviour
     [SerializeField] private List<WeaponData> unlockedWeapons = new List<WeaponData>();
     private Dictionary<WeaponData, GameObject> weaponInstances = new Dictionary<WeaponData, GameObject>();
     private WeaponData currentWeapon;
+    private int weaponIndex = 0;
 
     private Camera playerCam;
     bool attackPending = false;
@@ -29,7 +30,20 @@ public class WeaponController : MonoBehaviour
     }    
     private void WeaponScroll(int value) 
     {
-        Debug.Log("Weapon Scroll: " + value);
+        weaponIndex += value;
+        weaponIndex = Mathf.Clamp(weaponIndex, 0, unlockedWeapons.Count - 1);
+
+        currentWeapon = unlockedWeapons[weaponIndex];
+
+        if (!weaponInstances.ContainsKey(currentWeapon)) 
+        {
+            ApplyWeapon(currentWeapon);
+            EquipWeapon(currentWeapon);
+        }
+        else 
+        {
+            EquipWeapon(currentWeapon);
+        }
     }
     private void ApplyWeapon(WeaponData data)
     {
