@@ -31,9 +31,5 @@ public class CameraManager : MonoBehaviour
 
         transform.position = followTarget.position;
         transform.rotation = followTarget.rotation;
-    }
-    private void FixedUpdate()
-    {
-        
-    }
+    }    
 }

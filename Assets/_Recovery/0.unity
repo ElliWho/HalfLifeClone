@@ -2620,7 +2620,6 @@ MonoBehaviour:
   thirdPersonCameraDistance: 4
   thirdPersonCameraHeight: 5
   thirdPersonCameraLookAtHeight: 3
-  handTransform: {fileID: 696426030108745537}
   cameraPivot: {fileID: 5520682}
   StickDegPerSec: 240
 --- !u!54 &1697131798
@@ -2685,7 +2684,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 024df42cc5d209049a7e3af466aba75a, type: 2}
   - {fileID: 11400000, guid: 71f81cef911fc274fa45d0481c23cbbb, type: 2}
   - {fileID: 11400000, guid: 8cc79daca59857e4d868961e95f8ea1c, type: 2}
-  attackPending: 0
+  handAnimator: {fileID: 1697131801}
+  baseHandController: {fileID: 9100000, guid: ecd3f7dd0435bc74cab18a6a61a1a4ba, type: 2}
 --- !u!95 &1697131801
 Animator:
   serializedVersion: 7
@@ -2720,8 +2720,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35c6e9823d29b144d87cf702c9f35d0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  baseHandController: {fileID: 9100000, guid: ecd3f7dd0435bc74cab18a6a61a1a4ba, type: 2}
-  handAnimator: {fileID: 1697131801}
+  flipOffAnim: {fileID: 7400000, guid: 96e718fe828b522488c69b8eaea7a3a1, type: 2}
+  waveAnim: {fileID: 7400000, guid: 34dc7de1586d0ee48bb8a592fc29f0a7, type: 2}
+  defaultAnim: {fileID: 7400000, guid: 9b6202038291a244b95580b9c77e8c36, type: 2}
 --- !u!1 &1874460764
 GameObject:
   m_ObjectHideFlags: 0

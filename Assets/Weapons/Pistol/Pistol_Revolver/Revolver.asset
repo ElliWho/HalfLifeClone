@@ -16,18 +16,19 @@ MonoBehaviour:
   weaponIcon: {fileID: 0}
   mesh: {fileID: 5205273766947270349, guid: 711ed614cefec6f4693726ad13900e41, type: 3}
   weaponEffects: {fileID: 11400000, guid: d61e46af9dbbc4046a17d68fcf6f3e20, type: 2}
-  weaponType: 1
+  weaponType: 0
   handAnimationSet: {fileID: 11400000, guid: dc30209f2d3052b4caf03e5230619009, type: 2}
   equipAnim: {fileID: 0}
   reloadAnim: {fileID: 0}
   fireAnim: {fileID: 0}
   emptyAnim: {fileID: 0}
   baseDamage: 21
-  fireRate: 3
+  fireRate: 0.125
   magazineSize: 6
   maxAmmoCapacity: 24
   isAutomatic: 0
   dropOffDistance: 0
   projectileAmount: 0
-  shotsBeforeDebuff: 0
-  debuffSpreadAngle: 0
+  shotsBeforeDebuff: 3
+  debuffSpreadAngle: 15
+  consequtiveWindow: 0.4

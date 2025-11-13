@@ -16,8 +16,8 @@ MonoBehaviour:
   weaponIcon: {fileID: 0}
   mesh: {fileID: 4821546566958381162, guid: 858dd39d1bbece34da2ce1fcd2884638, type: 3}
   weaponEffects: {fileID: 0}
-  weaponType: 0
-  handAnimationSet: {fileID: 11400000, guid: dc30209f2d3052b4caf03e5230619009, type: 2}
+  weaponType: 2
+  handAnimationSet: {fileID: 11400000, guid: 23c488388749e8644a921c4708fba526, type: 2}
   equipAnim: {fileID: 0}
   reloadAnim: {fileID: 0}
   fireAnim: {fileID: 0}

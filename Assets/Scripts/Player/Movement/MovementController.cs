@@ -31,6 +31,9 @@ public class MovementController : MonoBehaviour
     [SerializeField] private float thirdPersonCameraHeight = 5f;
     [SerializeField] private float thirdPersonCameraLookAtHeight = 3f;
 
+    [Header("Hands")]
+    [SerializeField] private Transform handTransform;
+
     private bool isThirdPersonCamera = false;
     private bool overrideCamera = false;
 
@@ -176,6 +179,7 @@ public class MovementController : MonoBehaviour
     private void LateUpdate()
     {
         cameraPivot.localRotation = Quaternion.Euler(_pitch, 0, 0);
+        handTransform.localRotation = Quaternion.Euler(_pitch, 0, 0);
     }
     public void Teleport(Vector3 pos)
     {

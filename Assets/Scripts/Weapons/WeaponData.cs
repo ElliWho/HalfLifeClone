@@ -2,7 +2,8 @@ using UnityEngine;
 public enum WeaponType 
 {
     Hitscan,
-    Projectile
+    Projectile,
+    Melee
 }
 [CreateAssetMenu(menuName = "Weapons/Weapon")]
 public class WeaponData : ScriptableObject
@@ -33,5 +34,6 @@ public class WeaponData : ScriptableObject
 
     [Header("Debuffs")]
     public int shotsBeforeDebuff;
-    public float debuffSpreadAngle;   
+    public float debuffSpreadAngle;
+    public float consequtiveWindow = 0.4f;
 }
