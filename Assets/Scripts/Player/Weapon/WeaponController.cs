@@ -87,21 +87,28 @@ public class WeaponController : MonoBehaviour
 
         handAnimator.SetTrigger("Attack");
 
-        Ray ray = playerCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-        if (Physics.Raycast(ray, out RaycastHit hit)) 
+        if(currentWeapon.weaponType == WeaponType.Projectile) 
         {
-            Hitbox hitbox = hit.collider.GetComponent<Hitbox>();
-            if (hitbox) 
+            Ray ray = playerCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                HitOutcome outcome = hitbox.ForwardHit(new HitInfo 
+                Hitbox hitbox = hit.collider.GetComponent<Hitbox>();
+                if (hitbox)
                 {
-                    point = hit.point,
-                    normal = hit.normal,
-                    isMelee = false,
-                    baseDamage = 10f,
-                    hitbox = hitbox.hitboxType
-                });
+                    HitOutcome outcome = hitbox.ForwardHit(new HitInfo
+                    {
+                        point = hit.point,
+                        normal = hit.normal,
+                        isMelee = false,
+                        baseDamage = 10f,
+                        hitbox = hitbox.hitboxType
+                    });
+                }
             }
         }
+        else if (currentWeapon.weaponType == WeaponType.Hitscan) 
+        {
+        
+        }        
     }
 }

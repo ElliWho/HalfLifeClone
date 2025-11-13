@@ -2683,6 +2683,7 @@ MonoBehaviour:
   unlockedWeapons:
   - {fileID: 11400000, guid: 024df42cc5d209049a7e3af466aba75a, type: 2}
   - {fileID: 11400000, guid: 71f81cef911fc274fa45d0481c23cbbb, type: 2}
+  - {fileID: 11400000, guid: 8cc79daca59857e4d868961e95f8ea1c, type: 2}
   handAnimator: {fileID: 1697131801}
   baseHandController: {fileID: 9100000, guid: ecd3f7dd0435bc74cab18a6a61a1a4ba, type: 2}
 --- !u!95 &1697131801

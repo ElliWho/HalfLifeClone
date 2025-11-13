@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 355dd8f768d9f6a479ff5a65bedb7621, type: 3}
-  m_Name: Revolver
+  m_Name: Crowbar
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  weaponName: Revolver
+  weaponName: Crowbar
   weaponIcon: {fileID: 0}
-  mesh: {fileID: 5205273766947270349, guid: 711ed614cefec6f4693726ad13900e41, type: 3}
-  weaponEffects: {fileID: 11400000, guid: d61e46af9dbbc4046a17d68fcf6f3e20, type: 2}
-  weaponType: 1
+  mesh: {fileID: 4821546566958381162, guid: 858dd39d1bbece34da2ce1fcd2884638, type: 3}
+  weaponEffects: {fileID: 0}
+  weaponType: 0
   handAnimationSet: {fileID: 11400000, guid: dc30209f2d3052b4caf03e5230619009, type: 2}
   equipAnim: {fileID: 0}
   reloadAnim: {fileID: 0}
   fireAnim: {fileID: 0}
   emptyAnim: {fileID: 0}
-  baseDamage: 21
-  fireRate: 3
-  magazineSize: 6
-  maxAmmoCapacity: 24
+  baseDamage: 0
+  fireRate: 0
+  magazineSize: 0
+  maxAmmoCapacity: 0
   isAutomatic: 0
   dropOffDistance: 0
   projectileAmount: 0

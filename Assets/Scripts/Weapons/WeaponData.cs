@@ -1,5 +1,9 @@
 using UnityEngine;
-
+public enum WeaponType 
+{
+    Hitscan,
+    Projectile
+}
 [CreateAssetMenu(menuName = "Weapons/Weapon")]
 public class WeaponData : ScriptableObject
 {
@@ -8,6 +12,7 @@ public class WeaponData : ScriptableObject
     public Sprite weaponIcon;
     public GameObject mesh;
     public WeaponEffects weaponEffects;
+    public WeaponType weaponType;
 
     [Header("Animation")]
     public HandAnimationSet handAnimationSet;
