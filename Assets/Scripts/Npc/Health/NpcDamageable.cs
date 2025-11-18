@@ -11,5 +11,6 @@ public class NpcDamageable : MonoBehaviour, IDamageabale
             impactPoint = hitInfo.point,
             hitbox = hitInfo.hitbox
         };
+        
     }
 }

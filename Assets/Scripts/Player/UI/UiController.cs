@@ -10,8 +10,14 @@ public class UiController : MonoBehaviour
         WeaponController.OnAmmoChanged += UpdateAmmoDisplay;
     }
 
-    private void UpdateAmmoDisplay(int mag, int reserve) 
+    private void UpdateAmmoDisplay(WeaponRuntime wr) 
     {
-        ammoText.text = $"{mag} / {reserve}";
+        if(wr.weaponData.weaponType == WeaponType.Melee)
+            ammoText.gameObject.SetActive(false);
+        else 
+        {
+            ammoText.gameObject.SetActive(true);
+            ammoText.text = $"{wr.ammoInClip} / {wr.ammoInReserve}";
+        }        
     }
 }

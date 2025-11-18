@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using UnityEngine;
 
-public delegate void AmmoChangedEvent(int ammoInMag, int ammoInReserve);
+public delegate void AmmoChangedEvent(WeaponRuntime wr);
 
 public class WeaponController : MonoBehaviour
 {
@@ -34,56 +36,99 @@ public class WeaponController : MonoBehaviour
         playerCam = Camera.main;
         handAnimController = GetComponent<HandAnimController>();
 
+        handAnimController.OnReloadFinshed += ReloadFinished;
+
         GameServices.Input.Actions.Player.Attack.performed += ctx => attackPending = true;
         GameServices.Input.Actions.Player.Attack.canceled += ctx => attackPending = false;
-        GameServices.Input.Actions.Player.WeaponScroll.performed += ctx => WeaponScroll((int)ctx.ReadValue<float>());                       
+        GameServices.Input.Actions.Player.WeaponScroll.performed += ctx => WeaponScroll((int)ctx.ReadValue<float>());
         GameServices.Input.Actions.Player.Reload.performed += ctx => Reload();
     }
     private float timer = 0f;
 
     private bool CanFire() 
     {
-        if(!handAnimController.IsAnimationPlaying("Draw") && currentWeaponRuntime.ammoInClip > 0) 
-            return true;
-        return false;
+        if(isReloading || handAnimController.IsAnimationPlaying("Draw")) 
+        {            
+            Debug.Log("Cannot fire: Reloading or Drawing");
+            return false;
+        }
+        if (currentWeaponRuntime.ammoInClip <= 0)
+        {
+            Debug.Log("Cannot fire: No ammo in clip");
+            return false;
+        }
+        Debug.Log("Can fire");
+        return true;
     }
     private void Update()
     {
         if (!currentWeapon) 
         {
-            Debug.LogWarning("No weapon equipped");
             return;
         }
         
-        if (attackPending && CanFire() && timer >= currentWeapon.fireRate) 
+        if (attackPending && timer >= currentWeapon.fireRate) 
         {          
-            if (currentWeapon.isAutomatic) 
-            {
-                Attack();                
-            }
-            else 
+            if(currentWeapon.weaponType == WeaponType.Melee) 
             {
                 Attack();
-                attackPending = false;
             }
+            if (CanFire()) 
+            {
+                if (currentWeapon.isAutomatic)
+                {
+                    Attack();
+                }
+                else
+                {
+                    Attack();
+                    attackPending = false;
+                }
+            }            
             timer = 0f;
         }
         timer += Time.deltaTime;
-    }    
-    private void Reload() 
+    }
+    /*
+    private IEnumerator IReload() 
     {
-        int magazineSize = currentWeaponRuntime.weaponData.magazineSize;
-        int reserveAmmo = currentWeaponRuntime.ammoInReserve;
+        int neededAmmo = currentWeaponRuntime.weaponData.magazineSize - currentWeaponRuntime.ammoInClip;
 
-        int currentClipAmmo = currentWeaponRuntime.ammoInClip;
-        int neededAmmo = magazineSize - currentClipAmmo;
+        if (neededAmmo <= 0 || currentWeaponRuntime.ammoInReserve <= 0) yield break;
+        handAnimController.SetTrigger("Reload");
+
+        yield return new WaitForSeconds(0.1f);
+        yield return new WaitUntil(() => !handAnimController.IsAnimationPlaying("Reload"));
+
+        int ammoToLoad = Mathf.Clamp(neededAmmo, 1, currentWeaponRuntime.ammoInReserve);
+
+        currentWeaponRuntime.ammoInReserve -= ammoToLoad;
+        currentWeaponRuntime.ammoInClip += ammoToLoad;
+
+        OnAmmoChanged?.Invoke(currentWeaponRuntime);
+    }
+    */
+    bool isReloading = false;
+    private void Reload() 
+    {                
+        int neededAmmo = currentWeaponRuntime.weaponData.magazineSize - currentWeaponRuntime.ammoInClip;
+        if (neededAmmo <= 0 || currentWeaponRuntime.ammoInReserve <= 0) return;
+
+        handAnimController.SetTrigger("Reload");
+        isReloading = true;
+
+        int ammoToLoad = Mathf.Clamp(neededAmmo, 1, currentWeaponRuntime.ammoInReserve);
+
+        currentWeaponRuntime.ammoInReserve -= ammoToLoad;
+        currentWeaponRuntime.ammoInClip += ammoToLoad;
 
         
-    }
-    private void UpdateAmmo(WeaponRuntime weaponRuntime, int amount) 
+
+        OnAmmoChanged?.Invoke(currentWeaponRuntime);
+    }    
+    public void ReloadFinished() 
     {
-        weaponRuntime.ammoInClip += amount;
-        OnAmmoChanged?.Invoke(weaponRuntime.ammoInClip, weaponRuntime.ammoInReserve);
+        isReloading = false;
     }
     public void AddAmmo(AmmoType type, int amount) 
     {           
@@ -92,7 +137,7 @@ public class WeaponController : MonoBehaviour
             if (weaponRuntimes[i].weaponData.ammoType == type && weaponRuntimes[i].weaponData.weaponType != WeaponType.Melee) 
             {
                 weaponRuntimes[i].ammoInReserve += amount;
-                OnAmmoChanged?.Invoke(weaponRuntimes[i].ammoInClip, weaponRuntimes[i].ammoInReserve);
+                OnAmmoChanged?.Invoke(currentWeaponRuntime);
                 break;
             }
         }
@@ -100,7 +145,8 @@ public class WeaponController : MonoBehaviour
     private void WeaponScroll(int value) 
     {
         weaponIndex += value;
-        weaponIndex = Mathf.Clamp(weaponIndex, 0, unlockedWeapons.Count - 1);
+        if (weaponIndex < 0) weaponIndex = unlockedWeapons.Count - 1;
+        else if (weaponIndex >= unlockedWeapons.Count) weaponIndex = 0;
 
         currentWeapon = unlockedWeapons[weaponIndex];
 
@@ -130,12 +176,16 @@ public class WeaponController : MonoBehaviour
 
         if (currentWeaponRuntime == null) // weapon doesn't exist yet 
         {
+            // spawn weapon and reset its position after parent
             GameObject weaponInstance = Instantiate(data.mesh, weaponHoldPoint);
             weaponInstance.transform.localPosition = Vector3.zero;
             weaponInstance.transform.localRotation = Quaternion.identity;
 
+            // will hold referenceces to positions on the weapon mesh, e.g. muzzle point 
             WeaponView weaponView = weaponInstance.GetComponent<WeaponView>();
 
+
+            // spawn the Vfx
             ParticleSystem vfxParticle = null;
             if (data.weaponEffects != null && data.weaponEffects.fireVfxPrefab != null)
             {
@@ -173,6 +223,7 @@ public class WeaponController : MonoBehaviour
         }
 
         handAnimController.SetTrigger("Draw");
+        OnAmmoChanged?.Invoke(currentWeaponRuntime);
     }
 
     private void Attack() 
@@ -245,10 +296,12 @@ public class WeaponController : MonoBehaviour
                     baseDamage = currentWeaponRuntime.weaponData.baseDamage,
                     hitbox = hitbox.hitboxType
                 });
+                Debug.Log("Hit " + hit.collider.name + " Damage: " + outcome.damageApplied);
             }
         }
         currentWeaponRuntime.muzzleVfxInstance.Play();
-        UpdateAmmo(currentWeaponRuntime, -1);
+        currentWeaponRuntime.ammoInClip--;
+        OnAmmoChanged?.Invoke(currentWeaponRuntime);
     }
     private void HandleMelee() 
     {

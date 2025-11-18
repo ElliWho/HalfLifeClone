@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
@@ -5,7 +6,13 @@ public class HandAnimController : MonoBehaviour
 {
     [SerializeField] private RuntimeAnimatorController baseHandController;
     [SerializeField] private Animator handAnimator;
-    
+
+    public event Action OnReloadFinshed;
+    public void ReloadFinishedEvent() 
+    {
+        Debug.Log("Reload Finished Event Triggered");
+        OnReloadFinshed?.Invoke();
+    }
     public void ApplyOverride(HandAnimationSet set) 
     {
         if (set == null)
