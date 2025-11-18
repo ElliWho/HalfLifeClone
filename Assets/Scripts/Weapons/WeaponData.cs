@@ -20,7 +20,11 @@ public class WeaponData : ScriptableObject
     public WeaponType weaponType;
 
     [Header("Animation")]
-    public HandAnimationSet handAnimationSet;
+    // this is a set of hand animations for the weapon
+    // ie reload, equip, fire etc
+    public HandAnimationSet handAnimationSet; 
+
+    // animation clips fot the weapon model
     public AnimationClip equipAnim;
     public AnimationClip reloadAnim;
     public AnimationClip fireAnim;
