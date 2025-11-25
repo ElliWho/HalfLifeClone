@@ -70,6 +70,9 @@ public class MovementController : MonoBehaviour
                         | RigidbodyConstraints.FreezeRotationY
                         | RigidbodyConstraints.FreezeRotationZ;
 
+        _rb.constraints = RigidbodyConstraints.FreezeRotation;
+        _rb.interpolation = RigidbodyInterpolation.Interpolate;
+
         _rb.useGravity = false;
 
         GameServices.Cam.SetFollowTarget(cameraPivot);
@@ -101,8 +104,13 @@ public class MovementController : MonoBehaviour
 
     private void Update()
     {
-        GetMovementInput();
         GetLookInput();
+
+        transform.rotation = Quaternion.Euler(0f, _yaw, 0f);
+        cameraPivot.localRotation = Quaternion.Euler(_pitch, 0, 0);
+        handTransform.localRotation = Quaternion.Euler(_pitch, 0, 0);
+
+        GetMovementInput();
     }
 
     private void GetLookInput()
@@ -158,19 +166,12 @@ public class MovementController : MonoBehaviour
             ApplyGravity();
             AirAccelerate();
         }
-
-        _rb.MoveRotation(Quaternion.Euler(0, _yaw, 0));
         _rb.linearVelocity = _velocity;
+        //_rb.MoveRotation(Quaternion.Euler(0f, _yaw, 0f));
 
         _isGrounded = false;
         groundNormal = Vector3.zero;
     }
-
-    private void LateUpdate()
-    {
-        cameraPivot.localRotation = Quaternion.Euler(_pitch, 0, 0);
-        handTransform.localRotation = Quaternion.Euler(_pitch, 0, 0);
-    }    
 
     private void Jump()
     {

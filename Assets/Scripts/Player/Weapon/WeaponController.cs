@@ -44,7 +44,9 @@ public class WeaponController : MonoBehaviour
     public static event AmmoChangedEvent OnAmmoChanged;
 
     // bool to chek if reloading ie. cannot shoot
-    bool isReloading = false;    
+    bool isReloading = false;
+
+    [SerializeField] private PlayerAudioManager playerAudioManager;
 
     private void Awake()
     {
@@ -129,14 +131,16 @@ public class WeaponController : MonoBehaviour
         currentWeaponRuntime.ammoInReserve -= ammoToLoad;
         currentWeaponRuntime.ammoInClip += ammoToLoad;
 
-        
-
-        OnAmmoChanged?.Invoke(currentWeaponRuntime);
+        AudioClip reloadClip = currentWeaponRuntime.weaponData.weaponEffects.reloadSfx;
+        if (reloadClip != null)
+            playerAudioManager.PlayClip(SoundType.Weapon, reloadClip);
     }    
     public void ReloadFinished() 
     {
         // this is called by an animation event to signal the reload is finished
         isReloading = false;
+
+        OnAmmoChanged?.Invoke(currentWeaponRuntime);
     }
     public void AddAmmo(AmmoType type, int amount) // To Improve
     {           
@@ -262,6 +266,10 @@ public class WeaponController : MonoBehaviour
                 HandleMelee();
                 break;
         }
+
+        AudioClip attackClip = currentWeapon.weaponEffects.fireSfx;
+        if (attackClip != null)
+            playerAudioManager.PlayClip(SoundType.Weapon, attackClip);
     }
 
     // this is for weapon inaccuracy / spread
