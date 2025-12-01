@@ -4,7 +4,7 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour
 {
     private Transform followTarget = null;
-    [SerializeField] private Vector3 playerOffset;
+
     private void Awake()
     {
         if(GameServices.Cam != this)
@@ -19,12 +19,7 @@ public class CameraManager : MonoBehaviour
     public void SetFollowTarget(Transform target) 
     {
         followTarget = target;
-    }
-
-    private void Update()
-    {
-        
-    }
+    }    
     private void LateUpdate()
     {
         if (followTarget == null) return;

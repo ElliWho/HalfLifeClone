@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -57,9 +58,15 @@ public class MovementController : MonoBehaviour
 
     [SerializeField] private float StickDegPerSec = 240f;
 
+    private Camera _camera; 
+
     private void Awake()
     {
         SubscribeInputs();
+        _camera = Camera.main;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Start()
@@ -70,9 +77,12 @@ public class MovementController : MonoBehaviour
                         | RigidbodyConstraints.FreezeRotationY
                         | RigidbodyConstraints.FreezeRotationZ;
 
+        _rb.constraints = RigidbodyConstraints.FreezeRotation;
+        _rb.interpolation = RigidbodyInterpolation.Interpolate;
+
         _rb.useGravity = false;
 
-        GameServices.Cam.SetFollowTarget(cameraPivot);
+        //GameServices.Cam.SetFollowTarget(cameraPivot);
     }
 
     #region Inputs
@@ -95,14 +105,18 @@ public class MovementController : MonoBehaviour
         float x = _moveInput.x;
         float z = _moveInput.y;
 
-        _inputDir = transform.rotation * new Vector3(x, 0, z).normalized;
+        _inputDir = _camera.transform.localRotation * new Vector3(x, 0, z).normalized;
     }
     #endregion
 
     private void Update()
     {
-        GetMovementInput();
         GetLookInput();
+
+        _camera.transform.localRotation = Quaternion.Euler(_pitch, _yaw, 0);
+        handTransform.localRotation = Quaternion.Euler(_pitch, _yaw, 0);
+
+        GetMovementInput();
     }
 
     private void GetLookInput()
@@ -158,19 +172,12 @@ public class MovementController : MonoBehaviour
             ApplyGravity();
             AirAccelerate();
         }
-
-        _rb.MoveRotation(Quaternion.Euler(0, _yaw, 0));
         _rb.linearVelocity = _velocity;
+        //_rb.MoveRotation(Quaternion.Euler(0f, _yaw, 0f));
 
         _isGrounded = false;
         groundNormal = Vector3.zero;
     }
-
-    private void LateUpdate()
-    {
-        cameraPivot.localRotation = Quaternion.Euler(_pitch, 0, 0);
-        handTransform.localRotation = Quaternion.Euler(_pitch, 0, 0);
-    }    
 
     private void Jump()
     {
